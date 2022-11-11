@@ -1,37 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class BallController : Ball
+public class BallController : MonoBehaviourPun
 {
     bool didMouseUp;
     bool didMouseDown;
 
     Vector2 ballPos;
     Vector2 releasePos;
-    public override void Start()
+    [SerializeField] protected float forceMultiplier;
+
+
+    public void Start()
     {
-        base.Start();
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            MasterManager._instance.RPCMaster("RequestConnectPlayer", PhotonNetwork.LocalPlayer);
+        }
+
         MouseReset();
     }
 
-    private void OnMouseDown()
+    public void Update()
     {
-        ballPos = transform.position;
-        didMouseDown = true;
-    }
+        if (Input.GetMouseButtonDown(0))
+        {
+            ballPos = transform.position;
+            didMouseDown = true;
+        }
 
-    private void OnMouseUp()
-    {
-        releasePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        didMouseUp = true;
-    }
+        if (Input.GetMouseButtonUp(0))
+        {
+            releasePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            didMouseUp = true;
+        }
 
-    public override void Update()
-    {
         if(didMouseUp && didMouseDown)
         {
-            rb.AddForce((ballPos - releasePos) * forceMultiplier);
+            MasterManager._instance.RPCMaster("RequestMoveBall", PhotonNetwork.LocalPlayer, ballPos, releasePos, forceMultiplier);
             MouseReset();
         }
     }
