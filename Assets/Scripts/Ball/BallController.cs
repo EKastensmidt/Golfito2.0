@@ -12,6 +12,14 @@ public class BallController : MonoBehaviourPun
     Vector2 releasePos;
     [SerializeField] protected float forceMultiplier;
 
+    private void Awake()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Destroy(Camera.main.gameObject);
+            Destroy(this);
+        }
+    }
 
     public void Start()
     {

@@ -18,8 +18,8 @@ public class NetManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         nickName.text = "ezexd";
-        roomName.text = "salitaxd";
-        maxPlayers.text = 2.ToString();
+        roomName.text = "Golfito";
+        maxPlayers.text = 5.ToString();
 
 
     PhotonNetwork.ConnectUsingSettings();
@@ -82,7 +82,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         status.text = "Joined Room";
-        PhotonNetwork.LoadLevel("Jueguito");
+        PhotonNetwork.LoadLevel("Level1");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)

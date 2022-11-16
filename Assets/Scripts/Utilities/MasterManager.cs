@@ -48,7 +48,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RequestConnectPlayer(Player client)
     {
-        GameObject obj = PhotonNetwork.Instantiate("Ball", Vector3.zero, Quaternion.identity);
+        GameObject obj = PhotonNetwork.Instantiate("Ball", transform.position, Quaternion.identity);
         Ball ball = obj.GetComponent<Ball>();
         photonView.RPC("UpdatePlayer", RpcTarget.All, client, ball.Pv.ViewID);
     }
@@ -61,6 +61,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
         _dicChars[client] = ball;
         _dicPlayer[ball] = client;
         gameManager.SetManager(ball);
+        ball.SetName(client.NickName);
 
     }
 }
