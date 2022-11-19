@@ -9,22 +9,48 @@ public class Chat : MonoBehaviourPun
 {
     public TextMeshProUGUI content;
     public TMP_InputField inputField;
-
-    public void SendMessage()
+    string command = "w/";
+    public void ChatSendMessage()
     {
         var message = inputField.text;
         if (string.IsNullOrEmpty(message) || string.IsNullOrWhiteSpace(message)) return;
-        photonView.RPC("GetMessage", RpcTarget.All, PhotonNetwork.NickName, message);
+        string [] words = message.Split(' ');
+
+        if (words.Length > 2 && words[0] == command)
+        {
+            var target = words[1];
+            foreach (var currentPlayer in PhotonNetwork.PlayerList)
+            {
+                if (target == currentPlayer.NickName)
+                {
+                    var currentMessage = string.Join(" ", words, 2, words.Length - 2);
+                    photonView.RPC("GetChatMessage", currentPlayer, PhotonNetwork.NickName, currentMessage,true);
+                    GetChatMessage(PhotonNetwork.NickName,currentMessage);
+                    return;
+                }
+            }
+            content.text += "<color=blue>" +"No existe target" + "</color>" + "\n";
+            inputField.text = " ";
+        }
+        else
+        {
+            photonView.RPC("GetChatMessage", RpcTarget.All, PhotonNetwork.NickName, message, false);
+
+        }
     }
 
     [PunRPC]
-    public void GetMessage(string nameClient,string message)
+    public void GetChatMessage(string nameClient,string message, bool wm=false)
     {
         string color;
         if (PhotonNetwork.NickName == nameClient)
         {
             color = "<color=red>";
 
+        }
+        else if (wm)
+        {
+            color = "<color=yellow>";
         }
         else
         {
@@ -33,4 +59,5 @@ public class Chat : MonoBehaviourPun
 
         content.text += color + nameClient + ": " + "</color>" + message + "\n";
     }
+
 }
