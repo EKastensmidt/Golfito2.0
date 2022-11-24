@@ -13,11 +13,13 @@ public class Ball : MonoBehaviourPun
     GameManager _manager;
     private int strokeCount;
     private string playerNick =  null;
+    private bool hasFinishedHole = false;
 
     public PhotonView Pv { get => pv; }
     public GameManager Manager { get => _manager; set => _manager = value; }
     public int StrokeCount { get => strokeCount; set => strokeCount = value; }
     public string PlayerNick { get => playerNick; set => playerNick = value; }
+    public bool HasFinishedHole { get => hasFinishedHole; set => hasFinishedHole = value; }
 
     public void Start()
     {
@@ -59,6 +61,16 @@ public class Ball : MonoBehaviourPun
     [PunRPC]
     public void DisappearBall()
     {
+        hasFinishedHole = true;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (_manager.CheckAllBallsFinished())
+            {
+                _manager.GameFinished();
+            }
+        }
+
         gameObject.SetActive(false);
     }
 

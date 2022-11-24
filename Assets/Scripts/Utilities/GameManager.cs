@@ -13,14 +13,57 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject waitingForMasterText, winText, loseText;
 
     private bool isGameStarted = false;
+    private bool isGameFinished = false;
 
     public bool IsGameStarted { get => isGameStarted; set => isGameStarted = value; }
 
     private List<Ball> ballList;
+    public List<Ball> BallList { get => ballList; set => ballList = value; }
+    private List<Player> winners;
+    private List<Player> losers;
+    public bool IsGameFinished { get => isGameFinished; set => isGameFinished = value; }
+    public List<Player> Winners { get => winners; set => winners = value; }
+    public List<Player> Losers { get => losers; set => losers = value; }
+
     private void Start()
     {
         SetStartRequirements();
         ballList = new List<Ball>();
+        winners = new List<Player>();
+        losers = new List<Player>();
+    }
+
+    private void Update()
+    {
+
+    }
+
+    public void GameFinished()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            List<Ball> ballWinners = new List<Ball>();
+            List<Ball> ballLosers = new List<Ball>();
+
+            ballWinners = CheckWinners(ballList);
+            ballLosers = CheckLosers(ballList, ballWinners);
+
+            MasterManager._instance.RPCMaster("RequestWinners", ballWinners);
+
+            if(ballLosers != null)
+            {
+                MasterManager._instance.RPCMaster("RequestLosers", ballLosers);
+            }
+
+            foreach (var client in winners)
+            {
+                pv.RPC("ShowWinScreen", RpcTarget.All, client);
+            }
+            foreach (var client in losers)
+            {
+                pv.RPC("ShowLoseScreen", RpcTarget.All, client);
+            }
+        }
     }
 
     public void SetManager(Ball ball)
@@ -64,5 +107,83 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         isGameStarted = true;
         ballList = GameObject.FindObjectsOfType<Ball>().ToList();
+    }
+
+    public bool CheckAllBallsFinished()
+    {
+        int currentBalls = 0;
+        foreach (var ball in ballList)
+        {
+            if (!ball.HasFinishedHole)
+            {
+                currentBalls++;
+            }
+        }
+
+        if (currentBalls == 0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private List<Ball> CheckWinners(List<Ball> balls)
+    {
+        List<Ball> winners = new List<Ball>();
+        int minStrokeCount = balls[0].StrokeCount;
+
+        for (int i = 0; i < balls.Count; i++)
+        {
+            if(minStrokeCount >= balls[i].StrokeCount)
+            {
+                minStrokeCount = balls[i].StrokeCount;
+            }
+        }
+
+        foreach (var ball in balls)
+        {
+            if(ball.StrokeCount == minStrokeCount)
+            {
+                winners.Add(ball);
+            }
+        }
+
+        return winners;
+    }
+
+    private List<Ball> CheckLosers(List<Ball> balls, List<Ball> ballWinners)
+    {
+        List<Ball> losers = new List<Ball>();
+        foreach (var ball in balls)
+        {
+            if (ballWinners.Contains(ball))
+            {
+
+            }
+            else
+            {
+                losers.Add(ball);
+            }
+        }
+        return losers;
+    }
+
+    [PunRPC]
+    public void ShowWinScreen(Player player)
+    {
+        if (player == PhotonNetwork.LocalPlayer)
+        {
+            winText.SetActive(true);
+        }
+    }
+
+    [PunRPC]
+    public void ShowLoseScreen(Player client)
+    {
+        if (client == PhotonNetwork.LocalPlayer)
+        {
+            loseText.SetActive(true);
+        }
     }
 }

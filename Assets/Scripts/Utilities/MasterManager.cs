@@ -72,4 +72,30 @@ public class MasterManager : MonoBehaviourPunCallbacks
             ball.PlayerNick = player.NickName;
         }
     }
+
+    [PunRPC]
+    public void RequestWinners(List<Ball> balls)
+    {
+        foreach (var ball in balls)
+        {
+            if (_dicPlayer.ContainsKey(ball))
+            {
+                Player player = _dicPlayer[ball];
+                gameManager.Winners.Add(player);
+            }
+        }
+    }
+
+    [PunRPC]
+    public void RequestLosers(List<Ball> balls)
+    {
+        foreach (var ball in balls)
+        {
+            if (_dicPlayer.ContainsKey(ball))
+            {
+                Player player = _dicPlayer[ball];
+                gameManager.Losers.Add(player);
+            }
+        }
+    }
 }
