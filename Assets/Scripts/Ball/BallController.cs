@@ -33,7 +33,7 @@ public class BallController : MonoBehaviourPun
 
     public void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             ballPos = transform.position;
             didMouseDown = true;

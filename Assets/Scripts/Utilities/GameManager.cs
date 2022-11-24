@@ -4,65 +4,65 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-
+using UnityEngine.UI;
+using System.Linq;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private PhotonView pv;
-    [SerializeField] private List<TextMeshProUGUI> PlayerNames;
-    [SerializeField] private List<TextMeshProUGUI> PlayerScores;
+    [SerializeField] private Button masterStartButton;
+    [SerializeField] private GameObject waitingForMasterText, winText, loseText;
+
+    private bool isGameStarted = false;
+
+    public bool IsGameStarted { get => isGameStarted; set => isGameStarted = value; }
+
+    private List<Ball> ballList;
+    private void Start()
+    {
+        SetStartRequirements();
+        ballList = new List<Ball>();
+    }
+
     public void SetManager(Ball ball)
     {
         ball.Manager = this;
     }
 
-    private void Start()
+    private void SetStartRequirements()
     {
-        
-    }
-
-    public void UpdatePlayerName()
-    {
-        pv.RPC("UpdateName", RpcTarget.AllBuffered);
-    }
-
-    [PunRPC]
-    public void UpdateName()
-    {
-        switch (PhotonNetwork.PlayerList.Length)
+        if (PhotonNetwork.IsMasterClient)
         {
-            case 2:
-                PlayerNames[0].gameObject.SetActive(true);
-                PlayerNames[0].text = PhotonNetwork.PlayerList[1].NickName + ":";
-                break;
-            case 3:
-                PlayerNames[0].gameObject.SetActive(true);
-                PlayerNames[1].gameObject.SetActive(true);
-
-                PlayerNames[0].text = PhotonNetwork.PlayerList[1].NickName + ":";
-                PlayerNames[1].text = PhotonNetwork.PlayerList[2].NickName + ":";
-                break;
-            case 4:
-                PlayerNames[0].gameObject.SetActive(true);
-                PlayerNames[1].gameObject.SetActive(true);
-                PlayerNames[2].gameObject.SetActive(true);
-
-                PlayerNames[0].text = PhotonNetwork.PlayerList[1].NickName + ":";
-                PlayerNames[1].text = PhotonNetwork.PlayerList[2].NickName + ":";
-                PlayerNames[2].text = PhotonNetwork.PlayerList[3].NickName + ":";
-                break;
-            case 5:
-                PlayerNames[0].gameObject.SetActive(true);
-                PlayerNames[1].gameObject.SetActive(true);
-                PlayerNames[2].gameObject.SetActive(true);
-                PlayerNames[3].gameObject.SetActive(true);
-
-                PlayerNames[0].text = PhotonNetwork.PlayerList[1].NickName + ":";
-                PlayerNames[1].text = PhotonNetwork.PlayerList[2].NickName + ":";
-                PlayerNames[2].text = PhotonNetwork.PlayerList[3].NickName + ":";
-                PlayerNames[3].text = PhotonNetwork.PlayerList[4].NickName + ":";
-                break;
+            masterStartButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            waitingForMasterText.SetActive(true);
         }
     }
 
+    // Activated by masterStartButton.
+    public void StartGameButtonPressed()
+    {
+        pv.RPC("GameStarted", RpcTarget.All);
+    }
 
+    [PunRPC]
+    public void GameStarted()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            masterStartButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            waitingForMasterText.SetActive(false);
+        }
+        StartGame();
+    }
+
+    private void StartGame()
+    {
+        isGameStarted = true;
+        ballList = GameObject.FindObjectsOfType<Ball>().ToList();
+    }
 }

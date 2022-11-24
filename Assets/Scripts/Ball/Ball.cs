@@ -2,27 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 public class Ball : MonoBehaviourPun
 {
     private Rigidbody2D rb;
+    [SerializeField] private TextMeshPro playerName;
+    [SerializeField] private TextMeshPro score;
     [SerializeField] private PhotonView pv;
     GameManager _manager;
     private int strokeCount;
-    private string playerNick;
+    private string playerNick =  null;
 
     public PhotonView Pv { get => pv; }
     public GameManager Manager { get => _manager; set => _manager = value; }
     public int StrokeCount { get => strokeCount; set => strokeCount = value; }
+    public string PlayerNick { get => playerNick; set => playerNick = value; }
 
     public void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        _manager.UpdatePlayerName();
+    }
+
+    private void Update()
+    {
+        if (!_manager.IsGameStarted)
+            return;
+
+        if (playerNick == null)
+        {
+            MasterManager._instance.RPCMaster("RequestPlayerName", this);
+            pv.RPC("UpdateName", RpcTarget.All, playerNick);
+        }
     }
 
     public void Move(Vector2 ballPos, Vector2 releasePos, float forceMultiplier)
     {
+        if (!_manager.IsGameStarted)
+            return;
+
         rb.AddForce((ballPos - releasePos) * forceMultiplier);
         StrokeCounter();
     }
@@ -30,6 +48,7 @@ public class Ball : MonoBehaviourPun
     public void StrokeCounter()
     {
         strokeCount++;
+        pv.RPC("UpdateScore", RpcTarget.AllBuffered, strokeCount.ToString());
     }
 
     public void BallFinishedHole()
@@ -37,14 +56,21 @@ public class Ball : MonoBehaviourPun
         pv.RPC("DisappearBall", RpcTarget.All);
     }
 
-    public void SetName(string nickName)
-    {
-        playerNick = nickName;
-    }
-
     [PunRPC]
     public void DisappearBall()
     {
         gameObject.SetActive(false);
+    }
+
+    [PunRPC]
+    public void UpdateScore(string strokes)
+    {
+        score.text = strokes;
+    }
+
+    [PunRPC]
+    public void UpdateName(string player)
+    {
+        playerName.text = player;
     }
 }

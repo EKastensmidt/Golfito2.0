@@ -47,6 +47,10 @@ MonoBehaviour:
   - UpdateName
   - GetMessage
   - GetChatMessage
+  - UpdateStrokes
+  - UpdateScore
+  - GameStarted
+  - RequestPlayerName
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

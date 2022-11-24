@@ -61,7 +61,15 @@ public class MasterManager : MonoBehaviourPunCallbacks
         _dicChars[client] = ball;
         _dicPlayer[ball] = client;
         gameManager.SetManager(ball);
-        ball.SetName(client.NickName);
+    }
 
+    [PunRPC]
+    public void RequestPlayerName(Ball ball)
+    {
+        if (_dicPlayer.ContainsKey(ball))
+        {
+            Player player = _dicPlayer[ball];
+            ball.PlayerNick = player.NickName;
+        }
     }
 }
