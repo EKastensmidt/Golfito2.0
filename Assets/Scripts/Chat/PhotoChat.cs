@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Chat;
 using Photon.Pun;
 using ExitGames.Client.Photon;
+using Photon.Voice.Unity;
 using TMPro;
 
 public class PhotoChat : MonoBehaviour, IChatClientListener
