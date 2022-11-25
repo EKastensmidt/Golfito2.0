@@ -11,9 +11,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private PhotonView pv;
     [SerializeField] private Button masterStartButton;
     [SerializeField] private GameObject waitingForMasterText, winText, loseText;
+    [SerializeField] private TextMeshProUGUI timeText;
 
     private bool isGameStarted = false;
     private bool isGameFinished = false;
+    private float currentTime = 0f;
 
     public bool IsGameStarted { get => isGameStarted; set => isGameStarted = value; }
 
@@ -35,7 +37,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-
+        SetTime();
     }
 
     public void GameFinished()
@@ -185,5 +187,24 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             loseText.SetActive(true);
         }
+    }
+
+    private int minutes, seconds;
+    private void SetTime()
+    {
+        if (!IsGameStarted) return;
+        if (PhotonNetwork.IsMasterClient == false) return;
+
+        currentTime += Time.deltaTime;
+        minutes = (int)(currentTime / 60f);
+        seconds = (int)(currentTime - minutes * 60f);
+
+        pv.RPC("UpdateTime", RpcTarget.All, minutes, seconds);
+    }
+
+    [PunRPC]
+    public void UpdateTime(int minutes, int seconds)
+    {
+        timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
