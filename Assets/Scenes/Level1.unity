@@ -1693,7 +1693,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1572685658}
-        m_TargetAssemblyTypeName: Chat, Assembly-CSharp
+        m_TargetAssemblyTypeName: PhotoChat, Assembly-CSharp
         m_MethodName: ChatSendMessage
         m_Mode: 1
         m_Arguments:
@@ -3236,7 +3236,6 @@ GameObject:
   - component: {fileID: 1572685657}
   - component: {fileID: 1572685656}
   - component: {fileID: 1572685655}
-  - component: {fileID: 1572685659}
   - component: {fileID: 1572685658}
   m_Layer: 5
   m_Name: Chat
@@ -3345,33 +3344,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1572685653}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46b55dcaf467b5a429234b6adc930b2c, type: 3}
+  m_Script: {fileID: 11500000, guid: 5afed277320621449aaacde1b707fe59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   content: {fileID: 468064839}
   inputField: {fileID: 628412801}
---- !u!114 &1572685659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1572685653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 4
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1 &1595303719
 GameObject:
   m_ObjectHideFlags: 0

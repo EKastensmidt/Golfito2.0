@@ -35,8 +35,9 @@ public class Chat : MonoBehaviourPun
         else
         {
             photonView.RPC("GetChatMessage", RpcTarget.All, PhotonNetwork.NickName, message, false);
-
+            inputField.text = " ";
         }
+        inputField.text = " ";
     }
 
     [PunRPC]

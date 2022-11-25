@@ -11,16 +11,48 @@ public class PhotoChat : MonoBehaviour, IChatClientListener
     public TextMeshProUGUI content;
     public TMP_InputField inputField;
     ChatClient chatClient;
+    string command = "w/";
 
     string channel;
     private void Start()
     {
+        chatClient = new ChatClient(this);
         chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.PhotonServerSettings.AppSettings.AppVersion,
             new AuthenticationValues(PhotonNetwork.NickName));
     }
     private void Update()
     {
         chatClient.Service();
+    }
+
+    public void ChatSendMessage()
+    {
+        var message = inputField.text;
+        if (string.IsNullOrEmpty(message) || string.IsNullOrWhiteSpace(message)) return;
+        string[] words = message.Split(' ');
+
+        if (words.Length > 2 && words[0] == command)
+        {
+            var target = words[1];
+            foreach (var currentPlayer in PhotonNetwork.PlayerList)
+            {
+                if (target == currentPlayer.NickName)
+                {
+                    var currentMessage = string.Join(" ", words, 2, words.Length - 2);
+                    chatClient.SendPrivateMessage(target, currentMessage);
+                    return;
+                }
+            }
+            content.text += "<color=blue>" + "No existe target" + "</color>" + "\n";
+            inputField.text = " ";
+        }
+        else
+        {
+            chatClient.PublishMessage(channel,message);
+            inputField.text = " ";
+        }
+        inputField.text = " ";
+
     }
     void IChatClientListener.DebugReturn(DebugLevel level, string message)
     {
@@ -31,7 +63,7 @@ public class PhotoChat : MonoBehaviour, IChatClientListener
     {
     }
 
-    void IChatClientListener.OnConnected()
+    public void OnConnected()
     {
         content.text += "SI SE CONECTO" + "\n";
         channel = PhotonNetwork.CurrentRoom.Name;
@@ -39,25 +71,48 @@ public class PhotoChat : MonoBehaviour, IChatClientListener
 
     }
 
-    void IChatClientListener.OnDisconnected()
+    public void OnDisconnected()
     {
         content.text += "NO SE CONECTO" + "\n";
 
     }
 
-    void IChatClientListener.OnGetMessages(string channelName, string[] senders, object[] messages)
+    public void OnGetMessages(string channelName, string[] senders, object[] messages)
     {
+
+        for (int i = 0; i < senders.Length; i++)
+        {
+            var currSenders = senders[i];
+            string color;
+            if (PhotonNetwork.NickName == currSenders)
+            {
+                color = "<color=red>";
+
+            }
+            else
+            {
+                color = "<color=blue>";
+            }
+
+            content.text += color + currSenders + ": " + "</color>" + messages[i] + "\n";
+        }
+
+
     }
 
-    void IChatClientListener.OnPrivateMessage(string sender, object message, string channelName)
+    public void OnPrivateMessage(string sender, object message, string channelName)
     {
+        string color;
+        color = "<color=yellow>";
+        content.text += color + sender + ": " + "</color>" + message + "\n";
+        inputField.text = " ";
     }
 
     void IChatClientListener.OnStatusUpdate(string user, int status, bool gotMessage, object message)
     {
     }
 
-    void IChatClientListener.OnSubscribed(string[] channels, bool[] results)
+    public void OnSubscribed(string[] channels, bool[] results)
     {
         for (int i = 0; i < channels.Length; i++)
         {
@@ -66,7 +121,7 @@ public class PhotoChat : MonoBehaviour, IChatClientListener
         }
     }
 
-    void IChatClientListener.OnUnsubscribed(string[] channels)
+    public void OnUnsubscribed(string[] channels)
     {
         for (int i = 0; i < channels.Length; i++)
         {
@@ -82,8 +137,4 @@ public class PhotoChat : MonoBehaviour, IChatClientListener
     void IChatClientListener.OnUserUnsubscribed(string channel, string user)
     {
     }
-
-    //xd
-
-
 }
