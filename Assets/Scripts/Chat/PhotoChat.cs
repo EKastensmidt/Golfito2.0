@@ -68,7 +68,10 @@ public class PhotoChat : MonoBehaviour, IChatClientListener
         content.text += "SI SE CONECTO" + "\n";
         channel = PhotonNetwork.CurrentRoom.Name;
         chatClient.Subscribe(channel);
+        string[] friends = new string[] {"eze","juan"};
+        chatClient.AddFriends(friends);
 
+        chatClient.SetOnlineStatus(ChatUserStatus.Online);
     }
 
     public void OnDisconnected()
@@ -108,8 +111,20 @@ public class PhotoChat : MonoBehaviour, IChatClientListener
         inputField.text = " ";
     }
 
-    void IChatClientListener.OnStatusUpdate(string user, int status, bool gotMessage, object message)
+    public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
     {
+        string userStatus = "";
+        if (status == 2)
+        {
+            userStatus = "connected";
+        }
+        else if (status == 0)
+        {
+            userStatus = "disconnected";
+
+        }
+        content.text += "<color=green>" + user + " "+ userStatus + "</color>" + "\n";
+
     }
 
     public void OnSubscribed(string[] channels, bool[] results)

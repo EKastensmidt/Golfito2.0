@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: 1525c26c-c3ad-4f2d-a9f6-e2fa6a87cc03
+    AppIdRealtime: 
     AppIdFusion: 
-    AppIdChat: 45490bc2-ba09-4120-84f3-e8fa44875cb3
+    AppIdChat: 
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
@@ -23,39 +23,39 @@ MonoBehaviour:
     Server: 
     Port: 0
     ProxyServer: 
-    Protocol: 1
+    Protocol: 0
     EnableProtocolFallback: 1
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: sa
+  DevRegion: 
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - CantHearYou
+  - ChangeColour
   - ClickRpc
   - DestroyRpc
+  - HeresWhy
   - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - RequestMoveBall
-  - RequestConnectPlayer
-  - UpdatePlayer
   - DisappearBall
-  - FinishedHole
-  - UpdateName
-  - GetMessage
-  - GetChatMessage
-  - UpdateStrokes
-  - UpdateScore
+  - Fire
   - GameStarted
+  - GetChatMessage
+  - RequestConnectPlayer
+  - RequestLosers
+  - RequestMoveBall
   - RequestPlayerName
   - RequestWinners
+  - RespawnSpaceship
   - ShowLoseScreen
   - ShowWinScreen
-  - RequestLosers
+  - UpdateName
+  - UpdatePlayer
+  - UpdateScore
   - UpdateTime
   DisableAutoOpenWizard: 1
-  ShowSettings: 1
-  DevRegionSetOnce: 1
+  ShowSettings: 0
+  DevRegionSetOnce: 0
