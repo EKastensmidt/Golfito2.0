@@ -33,13 +33,13 @@ public class BallController : MonoBehaviourPun
 
     public void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0) && !didMouseDown)
         {
-            ballPos = transform.position;
+            ballPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             didMouseDown = true;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && !didMouseUp)
         {
             releasePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             didMouseUp = true;
@@ -55,6 +55,6 @@ public class BallController : MonoBehaviourPun
     private void MouseReset()
     {
         didMouseUp = false;
-        didMouseDown = true;
+        didMouseDown = false;
     }
 }
