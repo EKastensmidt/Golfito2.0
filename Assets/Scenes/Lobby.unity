@@ -709,7 +709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropdown: {fileID: 318984711}
-  recorder: {fileID: 0}
+  recorder: {fileID: 1467153967}
 --- !u!1 &330416030
 GameObject:
   m_ObjectHideFlags: 0
@@ -2837,7 +2837,7 @@ MonoBehaviour:
   voiceDetectionThreshold: 0.01
   voiceDetectionDelayMs: 500
   interestGroup: 0
-  debugEchoMode: 0
+  debugEchoMode: 1
   reliableMode: 0
   encrypt: 0
   transmitEnabled: 1
@@ -2879,9 +2879,9 @@ MonoBehaviour:
   ApplyDontDestroyOnLoad: 1
   runInBackground: 1
   statsResetInterval: 1000
-  speakerPrefab: {fileID: 0}
-  primaryRecorder: {fileID: 0}
-  usePrimaryRecorder: 0
+  speakerPrefab: {fileID: 6830653365900842855, guid: 915c51dbca98a134ab36a64fdde278c5, type: 3}
+  primaryRecorder: {fileID: 1467153967}
+  usePrimaryRecorder: 1
   Settings:
     AppIdRealtime: 
     AppIdFusion: 

@@ -23,9 +23,11 @@ public class BallController : MonoBehaviourPun
 
     public void Start()
     {
+        PhotonNetwork.Instantiate("VoiceObject", Vector3.zero, Quaternion.identity);
         if (!PhotonNetwork.IsMasterClient)
         {
             MasterManager._instance.RPCMaster("RequestConnectPlayer", PhotonNetwork.LocalPlayer);
+            
         }
 
         MouseReset();
